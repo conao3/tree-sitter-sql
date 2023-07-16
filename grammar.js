@@ -120,7 +120,10 @@ module.exports = grammar({
       kw("PRIMARY KEY"),
       seq(kw("REFERENCES"), $.identifier, optional(seq("(", $.identifier, ")"))),
     ),
-    column_type: $ => choice(
+    column_type: $ => seq(
+      $._column_type, optional("[]"),
+    ),
+    _column_type: $ => choice(
       kw("BIGINT"), kw("INT8"),
       kw("BIGSERIAL"), kw("SERIAL8"),
       seq(kw("BIT"), optional(seq("(", $.number, ")"))),
