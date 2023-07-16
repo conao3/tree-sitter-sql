@@ -178,7 +178,21 @@ module.exports = grammar({
       '"',
     ),
     _unquoted_identifier: $ => /[a-zA-Z_][a-zA-Z0-9_]*/,
-    number: $ => /\d+/,
+    number: $ => {
+      const digits = repeat1(/[0-9]+_?/);
+      const exponent = seq(/[eE][\+-]?/, digits);
+
+      return token(
+        seq(
+          choice(
+            seq(digits, ".", optional(digits), optional(exponent)),
+            seq(optional(digits), ".", digits, optional(exponent)),
+            seq(digits, exponent),
+            seq(digits),
+          ),
+        ),
+      );
+    },
     string: $ => seq(
       "'",
       repeat(choice(
