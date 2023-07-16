@@ -102,12 +102,26 @@ module.exports = grammar({
           $.identifier,
           optional(seq("(", sep1($.identifier, ","), ")")),
           optional(choice(kw("MATCH FULL"), kw("MATCH PARTIAL"), kw("MATCH SIMPLE"))),
-          optional(seq(kw("ON DELETE"), $.expression)),
-          optional(seq(kw("ON UPDATE"), $.expression)),
+          optional(seq(kw("ON DELETE"), $.referential_action)),
+          optional(seq(kw("ON UPDATE"), $.referential_action)),
         ),
       ),
       optional(choice(kw("DEFERRABLE"), kw("NOT DEFERRABLE"))),
       optional(choice(kw("INITIALLY DEFERRED"), kw("INITIALLY IMMEDIATE"))),
+    ),
+    referential_action: $ => choice(
+      seq(
+        choice(
+          kw("NO ACTION"),
+          kw("RESTRICT"),
+          kw("CASCADE"),
+          seq(kw("SET NULL"), optional(seq("(", $.identifier, ")"))),
+        )
+      ),
+      seq(
+        kw("SET DEFAULT"),
+        optional(seq("(", $.identifier, ")")),
+      ),
     ),
     column_constraint: $ => choice(
       kw("NOT NULL"),

@@ -267,6 +267,21 @@
     }
   },
   {
+    "type": "referential_action",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "source_file",
     "named": true,
     "fields": {},
@@ -315,6 +330,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "referential_action",
           "named": true
         }
       ]
@@ -433,6 +452,10 @@
   },
   {
     "type": "BY_DEFAULT",
+    "named": false
+  },
+  {
+    "type": "CASCADE",
     "named": false
   },
   {
@@ -612,6 +635,10 @@
     "named": false
   },
   {
+    "type": "NO_ACTION",
+    "named": false
+  },
+  {
     "type": "NO_INHERIT",
     "named": false
   },
@@ -664,6 +691,10 @@
     "named": false
   },
   {
+    "type": "RESTRICT",
+    "named": false
+  },
+  {
     "type": "SERIAL",
     "named": false
   },
@@ -677,6 +708,14 @@
   },
   {
     "type": "SERIAL8",
+    "named": false
+  },
+  {
+    "type": "SET_DEFAULT",
+    "named": false
+  },
+  {
+    "type": "SET_NULL",
     "named": false
   },
   {
