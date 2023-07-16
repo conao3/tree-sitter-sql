@@ -30,7 +30,7 @@ function sep(rule, separator) {
 module.exports = grammar({
   name: 'sql',
   rules: {
-    source_file: $ => sep1($.statement, ";"),
+    source_file: $ => repeat(seq($.statement, ";")),
     statement: $ => choice(
       $.create_statement,
     ),
@@ -58,7 +58,13 @@ module.exports = grammar({
       $.identifier,
       seq(
         "(",
-        sep1($.column_def, ","),
+        sep(
+          choice(
+            $.column_def,
+            $.table_constraint,
+          ),
+          ","
+        ),
         ")",
       )
     ),
@@ -66,6 +72,42 @@ module.exports = grammar({
       $.identifier,
       $.column_type,
       repeat($.column_constraint),
+    ),
+    table_constraint: $ => seq(
+      optional(seq(kw("CONSTRAINT"), $.identifier)),
+      choice(
+        seq(kw("CHECK"), "(", $.expression, ")", optional(kw("NO INHERIT"))),
+        seq(
+          kw("UNIQUE"),
+          optional(
+            seq(kw("NULLS"), optional(kw("NOT")), kw("DISTINCT"))
+          ),
+          "(", sep1($.identifier, ","), ")",
+          $.expression,
+        ),
+        seq(
+          kw("PRIMARY KEY"),
+          "(", sep1($.identifier, ","), ")",
+        ),
+        seq(
+          kw("EXCLUDE"),
+          optional(
+            seq(kw("USING"), $.expression)
+          )
+        ),
+        seq(
+          kw("FOREIGN KEY"),
+          "(", sep1($.identifier, ","), ")",
+          kw("REFERENCES"),
+          $.identifier,
+          optional(seq("(", sep1($.identifier, ","), ")")),
+          optional(choice(kw("MATCH FULL"), kw("MATCH PARTIAL"), kw("MATCH SIMPLE"))),
+          optional(seq(kw("ON DELETE"), $.expression)),
+          optional(seq(kw("ON UPDATE"), $.expression)),
+        ),
+      ),
+      optional(choice(kw("DEFERRABLE"), kw("NOT DEFERRABLE"))),
+      optional(choice(kw("INITIALLY DEFERRED"), kw("INITIALLY IMMEDIATE"))),
     ),
     column_constraint: $ => choice(
       kw("NOT NULL"),

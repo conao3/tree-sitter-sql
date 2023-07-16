@@ -140,6 +140,10 @@
         {
           "type": "identifier",
           "named": true
+        },
+        {
+          "type": "table_constraint",
+          "named": true
         }
       ]
     }
@@ -268,7 +272,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "statement",
@@ -296,6 +300,25 @@
     "type": "string",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "table_constraint",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "unary_expression",
@@ -437,6 +460,10 @@
     "named": false
   },
   {
+    "type": "CONSTRAINT",
+    "named": false
+  },
+  {
     "type": "CREATE",
     "named": false
   },
@@ -453,7 +480,19 @@
     "named": false
   },
   {
+    "type": "DEFERRABLE",
+    "named": false
+  },
+  {
+    "type": "DISTINCT",
+    "named": false
+  },
+  {
     "type": "DOUBLE_PRECISION",
+    "named": false
+  },
+  {
+    "type": "EXCLUDE",
     "named": false
   },
   {
@@ -466,6 +505,10 @@
   },
   {
     "type": "FLOAT8",
+    "named": false
+  },
+  {
+    "type": "FOREIGN_KEY",
     "named": false
   },
   {
@@ -482,6 +525,14 @@
   },
   {
     "type": "INET",
+    "named": false
+  },
+  {
+    "type": "INITIALLY_DEFERRED",
+    "named": false
+  },
+  {
+    "type": "INITIALLY_IMMEDIATE",
     "named": false
   },
   {
@@ -533,7 +584,27 @@
     "named": false
   },
   {
+    "type": "MATCH_FULL",
+    "named": false
+  },
+  {
+    "type": "MATCH_PARTIAL",
+    "named": false
+  },
+  {
+    "type": "MATCH_SIMPLE",
+    "named": false
+  },
+  {
     "type": "MONEY",
+    "named": false
+  },
+  {
+    "type": "NOT",
+    "named": false
+  },
+  {
+    "type": "NOT_DEFERRABLE",
     "named": false
   },
   {
@@ -541,11 +612,27 @@
     "named": false
   },
   {
+    "type": "NO_INHERIT",
+    "named": false
+  },
+  {
     "type": "NULL",
     "named": false
   },
   {
+    "type": "NULLS",
+    "named": false
+  },
+  {
     "type": "NUMERIC",
+    "named": false
+  },
+  {
+    "type": "ON_DELETE",
+    "named": false
+  },
+  {
+    "type": "ON_UPDATE",
     "named": false
   },
   {
@@ -650,6 +737,10 @@
   },
   {
     "type": "UNIQUE",
+    "named": false
+  },
+  {
+    "type": "USING",
     "named": false
   },
   {
