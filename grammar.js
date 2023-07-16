@@ -23,12 +23,29 @@ function sep1(rule, separator) {
   return seq(rule, repeat(seq(separator, rule)));
 }
 
+function sep(rule, separator) {
+  return optional(sep1(rule, separator));
+}
+
 module.exports = grammar({
   name: 'sql',
   rules: {
     source_file: $ => sep1($.statement, ";"),
     statement: $ => choice(
       $.create_statement,
+    ),
+    expression: $ => choice(
+      $.identifier,
+      $.number,
+      $.string,
+      $.boolean,
+      $.null,
+      $.array,
+      $.object,
+      $.function_call,
+      $.binary_expression,
+      $.unary_expression,
+      $.cast_expression,
     ),
     create_statement: $ => choice(
       $.create_table_statement,
@@ -48,7 +65,18 @@ module.exports = grammar({
     column_def: $ => seq(
       $.identifier,
       $.column_type,
-      optional(kw("NOT NULL")),
+      repeat($.column_constraint),
+    ),
+    column_constraint: $ => choice(
+      kw("NOT NULL"),
+      kw("NULL"),
+      seq(kw("CHECK"), "(", $.expression, ")"),
+      seq(kw("DEFAULT"), $.expression),
+      seq(kw("GENERATED ALWAYS AS"), "(", $.expression, ")", kw("STORED")),
+      seq(kw("GENERATED"), choice(kw("ALWAYS"), kw("BY DEFAULT")), kw("AS IDENTITY"), optional(seq("(", $.expression, ")"))),
+      seq(kw("UNIQUE"), "(", sep1($.identifier, ","), ")"),
+      kw("PRIMARY KEY"),
+      seq(kw("REFERENCES"), $.identifier, optional(seq("(", $.identifier, ")"))),
     ),
     column_type: $ => choice(
       kw("BIGINT"), kw("INT8"),
@@ -109,5 +137,54 @@ module.exports = grammar({
     ),
     _unquoted_identifier: $ => /[a-zA-Z_][a-zA-Z0-9_]*/,
     number: $ => /\d+/,
+    string: $ => seq(
+      "'",
+      repeat(choice(
+        /[^']/,
+        "''",
+      )),
+      "'",
+    ),
+    boolean: $ => choice(
+      kw("TRUE"),
+      kw("FALSE"),
+    ),
+    null: $ => kw("NULL"),
+    array: $ => seq(
+      "[",
+      sep1($.expression, ","),
+      "]",
+    ),
+    object: $ => seq(
+      "{",
+      sep1($.object_field, ","),
+      "}",
+    ),
+    object_field: $ => seq(
+      $.identifier,
+      ":",
+      $.expression,
+    ),
+    function_call: $ => seq(
+      $.identifier,
+      "(",
+      sep($.expression, ","),
+      ")",
+    ),
+    binary_expression: $ => choice(
+      prec.left(2, seq($.expression, "*", $.expression)),
+      prec.left(2, seq($.expression, "/", $.expression)),
+      prec.left(1, seq($.expression, "+", $.expression)),
+      prec.left(1, seq($.expression, "-", $.expression)),
+    ),
+    unary_expression: $ => prec(3, choice(
+      seq("-", $.expression),
+      seq("+", $.expression),
+    )),
+    cast_expression: $ => seq(
+      $.expression,
+      kw("::"),
+      $.column_type,
+    ),
   }
 });
